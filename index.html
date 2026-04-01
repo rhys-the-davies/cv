@@ -148,7 +148,6 @@ const CV = {
     "website": "https://www.rhysthedavies.com/about",
     "linkedin": "/in/rhys-the-davies",
     "github": "/rhys-the-davies",
-    "blog": "/blog/author/rhys-davies",
     "portfolio": "https://rhysthedavies.com/",
     "portfolioLogoFile": "professor-rhino.png"
   },
@@ -440,7 +439,6 @@ function render() {
       <div class="header-links">
         ${badge('linkedin','https://linkedin.com'+c.linkedin, c.linkedin)}
         ${badge('github','https://github.com'+c.github, c.github)}
-        ${badge('blog', c.portfolio, c.blog)}
         <a href="${c.portfolio}">${c.portfolioLogoFile ? `<span class="link-badge" style="background:transparent;overflow:hidden;padding:0;"><img src="logos/${c.portfolioLogoFile}" style="width:20px;height:20px;object-fit:cover;border-radius:4px;"></span>` : ''}${c.portfolio}</a>
       </div>
     </div>
