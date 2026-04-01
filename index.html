@@ -1,677 +1,3 @@
-
-Rhys_CV.pdf
-pdf
-
-I need to update my resume, i've attached the latest version which is about a year behind. Before iA update content though I want to think about format. 
-
-The issue with this one is that I think because it's a figma export to PDF, which is much longer than an A4 page I worry that automated systems might not ingest it properly or it causes issues - what do you think? 
-
-before updating it I want to think about the best way to build it and if the best way now is to use some AI tool. For example we've been working in a separate chat to build a very good looking website. 
-
-I think my end goal here is to build a CV that is both a acceptable and ingestible pdf I can easily share but also a webpage I can host on my website to also share.
-
-Show more
-11:33
-Your concern about the Figma export is well-founded. A multi-page PDF exported from Figma is essentially a flattened image or a design file masquerading as a document — ATS systems will either fail to extract text from it entirely, or pull out garbled nonsense because the text isn't structured in reading order. For any serious job application, that's a real problem.
-
-Here's how I'd think about your options:
-
-The goal: one source, two outputs
-
-You want a CV that's both ATS-safe and visually polished as a webpage. The smartest approach is to write the content once and render it in two ways — not maintain two separate files.
-
-The best modern approach for your situation
-
-Given you're already comfortable with Next.js and GitHub (you've shipped both), I'd build the CV as a page on rhysthedavies.com — clean, well-structured HTML with your existing design system — and then use a headless browser tool (Puppeteer or a service like it) to generate a clean, text-readable PDF from that page on demand.
-
-That gives you a single source of truth in code, a live URL you can share, and a PDF that ATS systems can actually read.
-
-AI tools worth considering
-
-A few options worth evaluating before you decide:
-
-Reactive Resume — open source, exports clean PDFs, has a JSON schema you can version control. Good ATS output but limited design control
-Read.cv — looks great, shareable URL, but the PDF export is weak for ATS
-Cursor + your existing Next.js site — most control, most effort, but fits your stack perfectly
-Given you're already building the website and care about the design output, I'd lean toward building it directly into rhysthedavies.com. The CV page becomes part of your portfolio, not a separate thing to maintain.
-
-Want to talk through what that page structure might look like before we touch any content?
-
-I like the idea of building the content out and then rendering it two ways, that's good, but I don't like your thoughts on how. I have a GitHub pages site for side projects but rhysthedavies.com (where I would want this to live) is a Ghost site, and my consulting business StudioRhys is a squarespace site - I do have experience with Next.js but that's not a good enough reason to choose that route
-
-11:35
-Fair point — shoehorning Next.js into a Ghost or Squarespace context creates more problems than it solves.
-
-Let me reframe. You have three realistic options given your actual setup:
-
-Option 1: HTML/CSS file on GitHub Pages Write the CV as a single, well-structured HTML file. Host it on your existing GitHub Pages setup at something like rhys-the-davies.github.io/cv. Generate the PDF from it using a browser's print-to-PDF (with a proper print stylesheet). Clean separation, version controlled, ATS-readable PDF, shareable URL. The downside is it sits on a GitHub Pages domain, not rhysthedavies.com — though you could point a subdomain at it.
-
-Option 2: Ghost injected page Ghost supports code injection and custom pages. You could build the CV as a custom template or inject it as a styled page directly on rhysthedavies.com. Keeps it under your domain, but Ghost's templating has limits and it's fiddly to maintain.
-
-Option 3: Squarespace custom page StudioRhys is where your professional work lives — arguably the more natural home for a CV. Squarespace has decent custom code blocks. You could build the CV layout there with injected HTML/CSS. Same print-to-PDF approach for the PDF output.
-
-Honestly, Option 1 is the cleanest technically. The subdomain question is the only real tradeoff.
-
-Where do you actually want this to live — rhysthedavies.com or StudioRhys?
-
-I think having it on GitHub pages is right, then indeed being able to print-to-PDF reliably and well is important, and then a custom page on StudioRhys sounds good
-
-11:36
-Good — that's a clean setup. GitHub Pages as the source of truth, print-to-PDF for the shareable document, and a custom page on Squarespace that either embeds or mirrors it.
-
-A few things to nail down before building:
-
-On the print-to-PDF side, the key is writing a proper @media print stylesheet from the start, not bolting it on afterwards. That means controlling page breaks explicitly, stripping navigation, setting margins to match A4, and ensuring fonts embed correctly. Done right, the PDF looks intentional rather than "printed from a browser."
-
-On the Squarespace embed, the simplest approach is an iframe pointing at the GitHub Pages URL — one source, always in sync, no manual updates on Squarespace. The alternative is duplicating the HTML in a Squarespace code block, which means maintaining two copies.
-
-Before we get into building though — two questions worth settling first:
-
-Q: What's the design direction for the CV page?
-A: I want to replicate the current style of the attached PDF, I think it's good and clean enough already, we can iterate, and I'm open to feedback but I want to stick with it for now
-
-Q: For the Squarespace page, how do you want to handle it?
-A: Duplicate HTML in Squarespace code block
-
-11:37
-Good choices both. Replicating the existing design is the right call — it's clean, well-structured, and the hierarchy works. Duplicating the HTML in Squarespace means a bit more maintenance but gives you full control over styling within that context.
-
-Before I read the skill file and start building, let me look at your CV PDF properly to extract the design details accurately.
-
-
-Reading the frontend design skill
-Reading the frontend design skill
-Now let me properly read the CV to extract all the content and design details.
-
-
-Reading PDF skill
-Reading PDF skill
-I already have the PDF visually in context from your upload, so I can work directly from that. Let me now build the HTML file faithfully replicating the design.
-
-Looking at your CV, the key design elements are: two-column layout (main content left, sidebar right), dark navy header, clean white body, colour-coded company logos/icons, and a clear typographic hierarchy. Let me build this now.
-
-
-Ran 2 commands, created a file, read a file
-Ran 2 commands, created a file, read a file
-Here's the first build. It replicates the key design DNA from your PDF — dark navy header, two-column layout with the sidebar, colour-coded company logo badges, skill tags, and clean typographic hierarchy — but rebuilt as proper semantic HTML that any ATS will read cleanly.
-
-A few things to review:
-
-Content — I've worked from what's in the PDF, but this is the old version. Dates for South Pole and Canonical are approximated; you'll want to check those, and we haven't added Aware yet.
-
-Design — I've swapped the font to DM Sans/DM Serif Display which gives a similar clean feel. If you want to match something closer to the original, let me know the font used in your Figma file.
-
-Print — the @media print stylesheet is in place. To generate the PDF, open in Chrome → Print → Save as PDF, with margins set to None and background graphics enabled.
-
-Next steps I'd suggest:
-
-Tell me what's changed since this CV was written — particularly the Aware work — and we'll update the content
-Confirm the date ranges for the South Pole roles
-Any design tweaks before we lock the structure
-Rhys davies cv
-Code · HTML 
-Screenshot 2026-04-01 at 11.42.01.png
-Screenshot 2026-04-01 at 11.42.16.png
-The design is good but very different from the original. 
-
-Here are screenshots of the original since maybe you're strugglign for the same reason a recruitment system would. 
-
-it seems you got the content right, though I ahvne't done a thorough review, but the design is way off
-
-Maybe the best way to do this is like we built the other site, have the content in a separate file, maybe json, and then pull it into the design programmatically so that editting the content is done in one place wihtout worrying about design and vice versa
-
-11:42
-You're right on both counts. The design I built is clean but it's my interpretation, not a faithful replica — looking at your screenshots, the original is much more minimal and document-like: single column, left-aligned, company logos are actual brand images not letter badges, dates sit above the role title, and the sidebar is a much simpler text list rather than tags.
-
-And yes — separating content from design is exactly the right call. JSON for content, HTML/CSS for layout, a small JS file to render it. Same pattern as the website build.
-
-Let me restructure properly. First let me look at the original design more carefully from your screenshots, then I'll build a content JSON and a renderer that actually matches what you have.
-
-
-Viewed 3 files, ran 2 commands
-Viewed 3 files, ran 2 commands
-Now I can see the original clearly. It's a two-column layout — main content left, sidebar right — but the typography is much simpler: the name is large bold sans-serif inline with the location tagline, company logos are actual brand icons, dates are small grey text above the role title, and the sidebar uses plain bold labels with pipe-separated text rather than tags.
-
-Let me build this properly with the content/design separation you described.
-
-
-CV content as structured JSON
-CV content as structured JSON
-Now the HTML renderer, faithfully matching the original layout:
-
-
-Created 2 files, ran 2 commands, read a file
-Created 2 files, ran 2 commands, read a file
-Two files — index.html (the renderer) and cv-data.json (all your content). They need to sit in the same folder to work, and you'll need to serve them via a local server rather than opening the HTML file directly (the JSON fetch won't work with a file:// URL). Easiest way:
-
-bash
-cd your-cv-folder && python3 -m http.server 8000
-Then open localhost:8000 in your browser.
-
-What's now much closer to the original:
-
-Name inline with the tagline, plain header — no dark navy block
-Dates as small uppercase grey text above each role
-Circular logo badges with company initials (same style as your Figma)
-Skills as bold label + pipe-separated text, not tags
-Sidebar section titles matching the original weight and size
-A note on the logo icons — the original uses actual brand logos (the LinkedIn icon, the South Pole logomark, etc.). I've used coloured initials circles which match the spirit but not the pixel-perfect brand marks. If you want exact logos, the cleanest approach is adding a logoUrl field to each job in the JSON and pointing at a hosted image.
-
-Next steps before we update content:
-
-Download both files, put them in a folder, run python3 -m http.server and send me a screenshot — I want to see how close it is before we iterate
-Then we update the JSON with the Aware role and any other changes
-Cv index
-Code · HTML 
-Cv data
-Code · JSON 
-Screenshot 2026-04-01 at 11.49.05.png
-Error
-
-11:49
-Right — the preview in Claude's artifact viewer is trying to open the HTML file directly without a server, so the fetch('./cv-data.json') call fails. That's expected behaviour in this context, not a bug in the code.
-
-The fix is straightforward: embed the JSON data directly into the HTML file as a JavaScript variable rather than fetching it. That way it works everywhere — Claude's preview, a file:// URL locally, GitHub Pages, and Squarespace — with no server required.
-
-
-Read the JSON to embed it
-Read the JSON to embed it
-Good. Now I'll rebuild as a single self-contained file with the data inlined — no fetch, no server needed.
-
-
-Ran 3 commands, read a file
-Ran 3 commands, read a file
-cv-final.html is now fully self-contained — open it directly in any browser, no server needed, and it should render correctly in the Claude preview too.
-
-How the workflow now works:
-
-Edit content in cv-data.json only — never touch the HTML
-When you want a new build, run the Python one-liner to re-inject the JSON into the template (I'll keep both files in the repo)
-For GitHub Pages, commit cv-final.html as index.html
-For Squarespace, paste the same HTML into a code block
-Take a look and tell me how close the design is this time. Once we're happy with the structure, we update the content with the Aware role and anything else that's changed.
-
-Cv final
-Code · HTML 
-Cv data
-Code · JSON 
-Screenshot 2026-04-01 at 11.53.43.png
-Much better - there are still things to improve though. 
-
-Here's a side by side screenshot. Things like images I can fix later but uploading image files for you to add in properly but as you can see there are issues with :
-
-White space and margins
-Heading sizing and fonts/formatting
-Font sizing in general
-The side bar on the right should be below the profile and first experience entry
-11:55
-Great — side by side makes it very clear. Let me map out exactly what needs fixing:
-
-Margins/whitespace — the HTML version is too compressed, needs more breathing room matching the Figma
-Heading sizes — "Profile" and "Experience" are too small and thin; in the original they're larger, lighter weight section headers
-Font sizing — body text is too small overall
-Sidebar position — biggest structural change: the sidebar shouldn't start at the top of the page. It should sit alongside the content starting after the profile section, roughly level with the first experience entry
-
-Ran 3 commands, read a file
-Ran 3 commands, read a file
-Key changes in this version:
-
-Sidebar now starts below the profile — the layout splits into two columns only after the profile section, so the sidebar sits level with the experience entries, exactly as in the original
-Header gets full width with proper breathing room
-Section headings are larger and lighter weight (matching the original's Profile / Experience style)
-Font sizes up across the board — body text at 0.88–0.93rem, much closer to the original
-More padding and whitespace throughout
-Open it in Arc and send me another screenshot — I think this one should be significantly closer.
-
-Cv v3
-Code · HTML 
-Screenshot 2026-04-01 at 11.59.32.png
-Okay, good but still similar issues, here's another side by side - the margins need white space, top, bottom, right and left. And again the side bar column needs to be lower to give the frist entry in the 'Experience' section full width. Make these adjustments and then we can moveo this to a GitHub repo
-
-12:00
-Clear — two remaining issues:
-
-More margin/padding on all sides, the content is too close to the page edges
-Sidebar needs to drop further — it should start level with the second experience entry, not the first, so Earth Action gets full width
-The cleanest way to handle point 2 is to pull the first job entry out of the two-column grid and render it full-width before the split begins.
-
-
-Ran 2 commands, read a file
-Ran 2 commands, read a file
-Key changes:
-
-First experience entry (Earth Action) is now full width — pulled out of the grid entirely, sits between the Experience heading and the split. The sidebar only starts alongside the second entry (Forward Incubator)
-Padding significantly increased — --pad-h: 64px left/right throughout, with more vertical breathing room on every section. All controlled by a single CSS variable so it's easy to tune
-Print stylesheet overrides --pad-h to 44px so the PDF doesn't waste too much margin space
-Once you're happy with this, the GitHub repo setup is straightforward — index.html at the root, cv-data.json alongside it, a simple build.py to regenerate the final file when you update content. Want me to set that up as the repo structure too?
-
-Cv v4
-Code · HTML 
-Screenshot 2026-04-01 at 12.06.12.png
-Yes let's now set up the repo and structure - there should be a place for content (cv-copy.json), a place for deisgn (index.html) and it probably makes sense to have a file/folder for 'logos' to reference. 
-
-Given that I've made the repo and am now on this screen in GitHub walk me through exactly how to push what we have so far there and introduce when I need to introduce to test the html to PDF functionality.
-
-14:18
-Good — repo is created at https://github.com/rhys-the-davies/cv.git. Here's exactly what to do.
-
-Step 1: Create the local folder structure
-
-In your terminal:
-
-bash
-mkdir ~/cv && cd ~/cv
-git init
-git remote add origin https://github.com/rhys-the-davies/cv.git
-git branch -M main
-Step 2: Add the files
-
-Download cv-v4.html and cv-data.json from this conversation, then move them into your ~/cv folder. Then rename and arrange them:
-
-bash
-mv cv-v4.html index.html
-mv cv-data.json cv-copy.json
-mkdir logos
-Step 3: Create the build script
-
-This is the glue — it injects cv-copy.json into index.html and outputs the deployable file:
-
-bash
-cat > build.py << 'EOF'
-import json, re
-
-with open('cv-copy.json') as f:
-    data = json.load(f)
-
-with open('index.html') as f:
-    template = f.read()
-
-output = template.replace('CV_JSON_PLACEHOLDER', json.dumps(data, ensure_ascii=False))
-
-with open('cv-built.html', 'w') as f:
-    f.write(output)
-
-print("Built cv-built.html")
-EOF
-Step 4: Create a README
-
-bash
-cat > README.md << 'EOF'
-# CV
-
-Single-source CV rendered as a webpage and print-ready PDF.
-
-## Structure
-- `cv-copy.json` — all content, edit this only
-- `index.html` — the renderer template, edit this for design changes
-- `logos/` — company logo image files
-- `build.py` — injects content into template, outputs `cv-built.html`
-- `cv-built.html` — the deployable output (do not edit directly)
-
-## Workflow
-1. Edit content in `cv-copy.json`
-2. Run `python3 build.py`
-3. Open `cv-built.html` in Chrome to review
-4. Print → Save as PDF (margins: None, background graphics: on)
-5. Commit and push — GitHub Pages serves `cv-built.html`
-
-## GitHub Pages
-Set Pages source to `main` branch, root folder.
-EOF
-Step 5: Add a .gitignore
-
-bash
-cat > .gitignore << 'EOF'
-.DS_Store
-EOF
-Step 6: Push everything
-
-bash
-git add .
-git commit -m "Initial structure — renderer, content, build script"
-git push -u origin main
-Step 7: Enable GitHub Pages
-
-Once pushed: go to your repo → Settings → Pages → Source: Deploy from a branch → Branch: main → Folder: / (root) → Save.
-
-GitHub Pages will serve index.html by default — but since index.html is your template with the placeholder, you have two options:
-
-Option A (simplest): rename cv-built.html to index.html after each build and commit that
-Option B (cleaner): add a GitHub Action that runs build.py automatically on push and commits the output
-For now Option A is fine. Once you've pushed and Pages is live, open it in Chrome and use File → Print → Save as PDF with:
-
-Paper size: A4
-Margins: None
-☑ Background graphics
-That's your ATS-readable PDF.
-
-Okay for some reason when I made the folder in the terminal it didn't make the folder in the righ tplace - I'm in it now in the CLI tell me how to remove the folder and I'll just create in manually in Finder
-
-14:22
-bash
-cd .. && pwd
-Run that first so you can see where you actually are, then:
-
-bash
-rm -rf cv
-That removes the folder and everything in it. Then create it wherever you want in Finder and cd into it in the terminal before running the git commands.
-
-Oh I accidentally made it on the top level instead of on the Desktop
-
-14:23
-bash
-mv ~/cv ~/Desktop/cv && cd ~/Desktop/cv
-That moves it rather than deleting and recreating it — everything you've already done inside it stays intact.
-
-I've made the folder but for some reason I can't download either file from here, give them to me again
-
-14:25
-
-Ran a command, read a file
-Ran a command, read a file
-Both files, already named correctly — index.html and cv-copy.json. Drop them straight into ~/Desktop/cv.
-
-Index
-Code · HTML 
-Cv copy
-Code · JSON 
-I try to downlaod them and I get an error message here in the interface saying 'Failed to download files'
-
-14:26
-That's a Claude.ai interface issue — nothing wrong with the files themselves. A few workarounds:
-
-Option 1: Copy-paste the JSON Click the </> (code view) button on the cv-copy file in the chat, select all, paste into a new file in VS Code or any text editor, save as cv-copy.json.
-
-Option 2: Copy-paste the HTML Same — click the code view on index, copy all, save as index.html.
-
-Option 3: I generate them as artifacts I can output both files as artifacts in the chat which use a different rendering path — those should be copyable even when downloads fail.
-
-Which would you prefer?
-
-Before we do that, is this the best way to do this? I'm looking at the fact that i'll need a build script and a readme and thinking this might be overcomplicating things
-
-14:26
-Honestly, no — for what this actually is, it's overengineered.
-
-The build script only exists because we separated the JSON from the HTML to make editing cleaner. But if you're the only person editing this, and you'll do it maybe twice a year, maintaining two files plus a build step adds friction for very little gain.
-
-The simpler version: one index.html file with the data inlined. You edit the HTML directly when you need to update content — the JS rendering code and the data are both right there. No build step, no JSON file to keep in sync, no script to run.
-
-The two-file approach would make sense if you were templating multiple CVs, or if a non-technical person needed to edit the content without touching HTML. Neither applies here.
-
-What I'd suggest instead:
-
-One repo, two files:
-
-index.html — everything in one place, GitHub Pages serves this directly
-logos/ — for when you add company images
-That's it. Edit the JSON data block at the top of the script when content changes, commit, push. GitHub Pages updates automatically. Open in Chrome, print to PDF when you need the document version.
-
-Want me to output a clean single-file version of that — data at the top of the script clearly separated with a comment so it's obvious where to edit — and then we can get it into the repo without the build complexity?
-
-Yep go ahead and do that
-
-14:27
-
-Ran 2 commands, read a file
-Ran 2 commands, read a file
-One file. If the download is still broken, click the </> code view button on it, select all, paste into a new file in VS Code and save as index.html.
-
-The structure at the top of the script is clearly marked:
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// CV CONTENT — edit everything in this block
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-const CV = { ... all your data ... };
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// RENDERER — design and layout lives below
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-I've also wired up logo image support — if you add a logoFile field to any job entry (e.g. "logoFile": "earth-action.png"), it'll load from the logos/ folder automatically. No logoFile = falls back to the coloured circle.
-
-Repo structure:
-
-cv/
-├── index.html     ← everything
-├── logos/         ← drop PNGs here when ready
-└── .gitignore
-Then the git commands from before, and enable GitHub Pages pointing at main root.
-
-Index
-Code · HTML 
-The download still isnt' working so give me the commands or instructions in vscode to make this file
-
-14:34
-Open VS Code, then open the terminal inside it with Ctrl+` and run:
-
-bash
-cd ~/Desktop/cv
-touch index.html
-open -a "Visual Studio Code" index.html
-That creates the file and opens it in the editor. Then in the Claude chat, click the eye icon (preview) on the index file above, then </> to switch to code view, select all (Cmd+A), copy, paste into VS Code, save (Cmd+S).
-
-Then back in the terminal:
-
-bash
-mkdir logos
-touch .gitignore
-echo ".DS_Store" > .gitignore
-git init
-git remote add origin https://github.com/rhys-the-davies/cv.git
-git branch -M main
-git add .
-git commit -m "Initial commit — CV renderer and content"
-git push -u origin main
-Done all of that
-
-14:36
-Perfect. Now enable GitHub Pages:
-
-Go to https://github.com/rhys-the-davies/cv
-Settings → Pages (left sidebar)
-Under "Branch" select main, folder / (root), click Save
-GitHub will give you a URL like https://rhys-the-davies.github.io/cv/ — it takes about 60 seconds to go live.
-
-Once it's up, open it in Chrome and test the print-to-PDF:
-
-File → Print (or Cmd+P) → then:
-
-Destination: Save as PDF
-Paper size: A4
-Margins: None
-☑ Background graphics
-That's your ATS-readable PDF. Send me a screenshot of both the live page and the PDF output when you're ready and we'll decide if anything needs tweaking before we move on to updating the content.
-
-Ah but it needs to be a public repo to use github pages
-
-14:37
-Yep — either make it public, or upgrade to GitHub Pro which includes Pages for private repos.
-
-Given this is a CV it probably makes sense to just make it public — the content is meant to be seen and the code isn't sensitive. To do it:
-
-Go to https://github.com/rhys-the-davies/cv
-Settings → scroll to the bottom → Danger Zone
-Change visibility → Make public → confirm
-Then go back and enable Pages as before.
-
-Screenshot 2026-04-01 at 14.42.21.png
-Screenshot 2026-04-01 at 14.40.30.png
-Screenshot 2026-04-01 at 14.40.16.png
-Screenshot 2026-04-01 at 14.40.02.png
-Done and done, the print preview is worrying but the html page is okay ish 
-
-Here are the screenshots - for the page itself:
-* The margins are still too small, everything on the page is too wide I want more white space on the top, bottom and sides, wider margins/more padding
-* The font is bothering me - can we using Atkinson Hyperlegible for titles and Lato for body? 
-* And you can see some spacing issues with the below sections, the side bar has too much left hand margin between it and the other column and second section, the top of the first column doesn't have space above it, before the horizonal line
-
-For the print version the biggest issue is the run on over pages instead of stopping at the end of a section.
-
-Show more
-14:43
-Good progress — live on GitHub Pages and print is working structurally. Clear list of fixes:
-
-Web: wider margins, font swap to Atkinson Hyperlegible + Lato, sidebar gap too wide, spacing above first job in the split Print: page breaks must fall between jobs, never mid-entry
-
-
-Ran 2 commands, read a file
-Ran 2 commands, read a file
-Copy-paste this into your index.html in VS Code, then:
-
-bash
-cd ~/Desktop/cv
-git add index.html
-git commit -m "Atkinson Hyperlegible + Lato fonts, wider margins, fixed print page breaks"
-git push
-Changes in this version:
-
-Atkinson Hyperlegible on all headings and titles, Lato light (300) for body text — gives it a much cleaner document feel
---pad-h: 80px — significantly more breathing room left and right
-Sidebar gap tightened to 32px and the right padding on the jobs column now equals that exactly, so the two columns sit closer together
-padding: 28px 0 at the top of both the jobs and sidebar columns — fixes the missing space above the first entry in the split
-Print: uses @page margins of 14mm/12mm instead of zero, so the content never hits the paper edge. Every .job has break-inside: avoid and page-break-inside: avoid (both for cross-browser coverage), and the footer is hidden in print
-Index
-Code · HTML 
-Screenshot 2026-04-01 at 14.51.53.png
-Now we're getting somewhere. That html looks much much better. The only thing left for the live page before we add to the content is the text colour, it's too light right now - i guess it's lato light or something like it, or maybe you've set it to grey for some reason, but we should bring it back to a regular font colour/size. 
-
-Otherwise the print preview also looks much better, good job
-
-14:52
-Quick fix — I set body text to font-weight: 300 (Lato Light) throughout which is too thin, and some of the muted colours crept into the main body text. I'll bump the body to 400 and make sure only secondary text (dates, descriptions, sidebar items) uses the lighter weight.
-
-
-Ran 3 commands, read a file
-Ran 3 commands, read a file
-All body text is now Lato Regular (400). The only things staying at lighter weight are the datelines, muted descriptions, and sidebar secondary text — which is intentional for hierarchy. Copy-paste into VS Code and push:
-
-bash
-git add index.html
-git commit -m "Fix font weight — body text to Lato Regular"
-git push
-Index
-Code · HTML 
-Really good stuff. Now we need to add a new section and adjust the current top section. What's the best way to do this?
-
-14:55
-Since all the content lives in the CV object at the top of index.html, both changes happen there — no touching the renderer unless we need a new layout component.
-
-Tell me what the two changes are and I'll figure out whether it's a pure content edit or whether the renderer needs updating too.
-
-I think a lot of changes actually now that i'm thinking about it. 
-
-To keep it on two pages I want to collapse all of my work at Canonical, South Pole, and Earth Action so there is only one entry for each company. It should still be clear I held multiple titles at the companies but less prominant. 
-
-Then I need to add a new section in the same form/format for my current position as Procut lead at AWARE™. 
-
-Then I want to think of a way to also incorporate my StudioRhys work here, that's where the Forward Inc work would go as well as my latest engagement with Valuing Impact in collaboration with Downstairs design too.
-
-14:58
-Good set of changes. Let me think through the structure before touching any code.
-
-Collapsing multi-role companies
-
-The cleanest approach is a single job entry per company with a compact role history line showing the progression of titles, then one unified bullet list. So instead of three separate South Pole blocks you'd get one, with something like:
-
-Product Manager → Senior PM → Group PM · 2021–2024
-
-Then the most significant bullets across all three roles, curated down to 4–5.
-
-AWARE™
-
-Straightforward new entry at the top — most recent, most prominent. This is also where we should think about what you actually want to say, since it's the current role and the one recruiters will read first.
-
-Studio Rhys
-
-This is the interesting one. It's not a single employer, it's a consultancy vehicle — so the right framing is one entry for Studio Rhys as the entity, with a brief line explaining what it is, and then sub-items for each engagement: Forward Incubator, Valuing Impact/Downstairs Design, and any others. Same visual treatment as the other companies but the bullets become engagement descriptions rather than responsibilities.
-
-Before I make any edits, a few things I need from you:
-
-Q: For AWARE™ — what's your official title and rough start date?
-A: Product Lead | 01/09/2025 - present
-
-Q: For the collapsed entries — how do you want to handle bullets?
-A: Curate the best 4-5 across all roles per company
-
-Q: Studio Rhys — where should it sit in the experience list?
-A: I'd like to see all three of these options visualised
-
-14:59
-Let me draft the content first, then build all three layout variants for you to compare.
-
-For the collapsed entries I'll curate the strongest bullets across roles. For AWARE™ I'll need you to give me the key things to include — what have you actually shipped or driven there so far?
-
-And for Studio Rhys, while you're thinking about AWARE™, here's what I have from context to work with:
-
-Forward Incubator coaching (03/2025–present)
-Valuing Impact / Downstairs Design engagement (Guatemala, WordPress hosting strategy)
-Studio Rhys as the consultancy vehicle (Amsterdam, freelance product & tech)
-Anything missing or wrong there? And is there a date for when Studio Rhys formally started as a thing you'd put on a CV?
-
-Forward Inc finished in February, i.e 25/02/2026 - otherwise that's good enough to start
-
-15:00
-Good. Give me the AWARE™ bullets and I'll build all three variants in one go.
-
-To prompt you — think in terms of: what have you built or shipped, what decisions have you owned, what's the measurable impact so far. Even rough notes are fine, I'll shape them.
-
-Do you have access to the 'Joining AWARE™' project ? Most everything you can infer from there
-
-15:01
-
-Relevant chats
-Relevant chats
-Good — I have enough. From the release notes, the research, and the platform context I can reconstruct your AWARE™ work clearly. Let me now build the updated content and all three Studio Rhys layout variants.
-
-
-Ran 4 commands, read a file
-Ran 4 commands, read a file
-Three files to compare — copy-paste each into a browser tab:
-
-Variant A — Studio Rhys sits immediately after AWARE™ at the top, signalling that both are current and running concurrently. Good if you want to lead with the consultancy identity.
-
-Variant B — Studio Rhys at the bottom of the experience list, after Canonical. Purely chronological, treats it as the oldest/background thread. Probably too buried.
-
-Variant C — Studio Rhys after Earth Action, grouped with your Amsterdam/recent period. Makes sense narratively — EA ended, Studio Rhys carried the consultancy work forward alongside AWARE™.
-
-All three have the same content changes: AWARE™ at the top as a new entry, companies collapsed to single entries with curated bullets, and the role progression line (e.g. "Product Manager → Senior PM → Group PM") in the title field.
-
-My instinct is Variant A or C — which one reads better to you?
-
-Variant a studio rhys at top
-Code · HTML 
-Variant b studio rhys at bottom
-Code · HTML 
-Variant c studio rhys after ea
-Code · HTML 
-I like Variant A the best and I think it's wroth adding a point to the StudioRhys section about how AWARE is technically a client of StudioRhys but best not to call that out in the AWARE™ section.
-
-15:14
-Good call — keeps the narrative clean. AWARE™ reads as a committed product lead role, and Studio Rhys quietly notes it as an engagement without making it the headline.
-
-
-Ran 3 commands, read a file
-Ran 3 commands, read a file
-The Studio Rhys bullets now read in order:
-
-AWARE™ — embedded product lead engagement; defining roadmap, shipping features, supporting GTM
-Valuing Impact — WordPress/platform strategy in collaboration with Downstairs Design
-Forward Incubator — coaching and judge panel (03/2025–02/2026)
-Copy-paste into VS Code and push:
-
-bash
-git add index.html
-git commit -m "Add AWARE™, collapse multi-role entries, add Studio Rhys"
-git push
-Index
-Code · HTML 
-
-Very nice and clean - I'll change some of the copy myself once it's in the repo
-
-Claude is AI and can make mistakes. Please double-check responses.
-Index · HTML
-Copy
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -698,10 +24,10 @@ Copy
     body { font-family: var(--font-body); color: var(--text); background: #e0e0e0; -webkit-font-smoothing: antialiased; }
     a { color: inherit; text-decoration: none; }
     a:hover { text-decoration: underline; }
- 
+
     /* PAGE */
     .page { max-width: var(--max-w); margin: 56px auto; background: #fff; box-shadow: 0 2px 32px rgba(0,0,0,0.12); }
- 
+
     /* HEADER */
     .header { padding: 52px var(--pad-h) 36px; border-bottom: 1px solid var(--border); }
     .header-top { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-bottom: 10px; }
@@ -713,17 +39,17 @@ Copy
     .header-links a { display: flex; align-items: center; gap: 6px; color: var(--text-muted); font-weight: 400; }
     .link-badge { width: 20px; height: 20px; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .link-badge svg { width: 11px; height: 11px; }
- 
+
     /* PROFILE — full width */
     .profile-wrap { padding: 40px var(--pad-h) 36px; border-bottom: 1px solid var(--border); }
     .section-heading { font-family: var(--font-heading); font-size: 1.35rem; font-weight: 400; margin-bottom: 16px; }
     .profile-wrap p { font-size: 0.93rem; line-height: 1.78; font-weight: 400; }
     .profile-wrap p strong { font-weight: 700; }
- 
+
     /* FIRST JOB — full width, Experience heading here */
     .first-job-wrap { padding: 36px var(--pad-h) 0; }
     .first-job-wrap .section-heading { margin-bottom: 22px; }
- 
+
     /* SPLIT — jobs left, sidebar right */
     .split {
       display: grid;
@@ -740,7 +66,7 @@ Copy
     .sidebar-col {
       padding: 28px 0 56px;
     }
- 
+
     /* JOBS */
     .job { margin-bottom: 32px; padding-bottom: 32px; border-bottom: 1px solid var(--border); break-inside: avoid; page-break-inside: avoid; }
     .job:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
@@ -753,7 +79,7 @@ Copy
     .job-desc { font-size: 0.88rem; line-height: 1.75; color: var(--text-muted); margin-bottom: 12px; font-weight: 400; }
     .job-bullets { list-style: disc; padding-left: 20px; }
     .job-bullets li { font-size: 0.88rem; line-height: 1.75; margin-bottom: 5px; font-weight: 400; }
- 
+
     /* SIDEBAR */
     .sidebar-section { margin-bottom: 26px; }
     .sidebar-heading { font-family: var(--font-heading); font-size: 1rem; font-weight: 700; margin-bottom: 10px; }
@@ -770,9 +96,9 @@ Copy
     .edu-icon { width: 34px; height: 34px; border-radius: 50%; background: #dbeafe; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; font-weight: 700; color: #1d4ed8; font-family: var(--font-body); }
     .edu-degree { font-size: 0.8rem; font-weight: 700; line-height: 1.45; font-family: var(--font-heading); }
     .edu-uni { font-size: 0.76rem; color: var(--text-muted); margin-top: 2px; font-weight: 400; }
- 
+
     .footer { text-align: center; padding: 24px; font-size: 0.88rem; font-weight: 400; color: var(--text-muted); border-top: 1px solid var(--border); font-family: var(--font-body); }
- 
+
     /* PRINT */
     @media print {
       @page { size: A4; margin: 14mm 12mm; }
@@ -795,7 +121,7 @@ Copy
       .footer { display: none; }
       * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
     }
- 
+
     /* RESPONSIVE */
     @media (max-width: 720px) {
       :root { --pad-h: 28px; }
@@ -808,11 +134,11 @@ Copy
 <body>
 <div class="page" id="cv-root"></div>
 <script>
- 
+
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // CV CONTENT — edit everything in this block. Do not edit below the divider.
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- 
+
 const CV = {
   "name": "Rhys Davies",
   "tagline": "UK citizen with Dutch residence permit, living in Amsterdam",
@@ -1016,11 +342,11 @@ const CV = {
     ]
   }
 };
- 
+
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // RENDERER — design and layout lives below here
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- 
+
 const ICONS = {
   openai:`<svg viewBox="0 0 24 24" fill="currentColor"><path d="M22.282 9.821a5.985 5.985 0 0 0-.516-4.91 6.046 6.046 0 0 0-6.51-2.9A6.065 6.065 0 0 0 4.981 4.18a5.985 5.985 0 0 0-3.998 2.9 6.046 6.046 0 0 0 .743 7.097 5.98 5.98 0 0 0 .51 4.911 6.051 6.051 0 0 0 6.515 2.9A5.985 5.985 0 0 0 13.26 24a6.056 6.056 0 0 0 5.772-4.206 5.99 5.99 0 0 0 3.997-2.9 6.056 6.056 0 0 0-.747-7.073zM13.26 22.43a4.476 4.476 0 0 1-2.876-1.04l.141-.081 4.779-2.758a.795.795 0 0 0 .392-.681v-6.737l2.02 1.168a.071.071 0 0 1 .038.052v5.583a4.504 4.504 0 0 1-4.494 4.494zM3.6 18.304a4.47 4.47 0 0 1-.535-3.014l.142.085 4.783 2.759a.771.771 0 0 0 .78 0l5.843-3.369v2.332a.08.08 0 0 1-.033.062L9.74 19.95a4.5 4.5 0 0 1-6.14-1.646zM2.34 7.896a4.485 4.485 0 0 1 2.366-1.973V11.6a.766.766 0 0 0 .388.676l5.815 3.355-2.02 1.168a.076.076 0 0 1-.071 0l-4.83-2.786A4.504 4.504 0 0 1 2.34 7.872zm16.597 3.855l-5.833-3.369L15.119 7.2a.076.076 0 0 1 .071 0l4.83 2.791a4.494 4.494 0 0 1-.676 8.105v-5.678a.79.79 0 0 0-.407-.667zm2.01-3.023l-.141-.085-4.774-2.782a.776.776 0 0 0-.785 0L9.409 9.23V6.897a.066.066 0 0 1 .028-.061l4.83-2.787a4.5 4.5 0 0 1 6.68 4.66zm-12.64 4.135l-2.02-1.164a.08.08 0 0 1-.038-.057V6.075a4.5 4.5 0 0 1 7.375-3.453l-.142.08L8.704 5.46a.795.795 0 0 0-.393.681zm1.097-2.365l2.602-1.5 2.607 1.5v2.999l-2.597 1.5-2.607-1.5z"/></svg>`,
   github:`<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>`,
@@ -1031,18 +357,18 @@ const ICONS = {
   powerbi:`<svg viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="3" fill="#F2C811"/><rect x="4" y="12" width="3" height="8" rx="1" fill="#1a1a1a" opacity=".55"/><rect x="9" y="8" width="3" height="12" rx="1" fill="#1a1a1a" opacity=".7"/><rect x="14" y="4" width="3" height="16" rx="1" fill="#1a1a1a"/></svg>`,
   make:`<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="#6D00CC"/><text x="12" y="15.5" text-anchor="middle" fill="white" font-size="6" font-weight="700" font-family="Lato,sans-serif">make</text></svg>`
 };
- 
+
 const LI = {
   linkedin: { bg:'#0a66c2', svg:`<svg width="11" height="11" viewBox="0 0 24 24" fill="white"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>` },
   github:   { bg:'#24292e', svg:`<svg width="11" height="11" viewBox="0 0 24 24" fill="white"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>` },
   blog:     { bg:'#e44d26', svg:`<svg width="11" height="11" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>` }
 };
- 
+
 function badge(type, href, label) {
   const ic = LI[type];
   return `<a href="${href}"><span class="link-badge" style="background:${ic.bg}">${ic.svg}</span>${label}</a>`;
 }
- 
+
 function jobHtml(job, extraClass) {
   const logo = job.logoFile
     ? `<img src="logos/${job.logoFile}" alt="${job.company}">`
@@ -1057,32 +383,32 @@ function jobHtml(job, extraClass) {
     <ul class="job-bullets">${job.bullets.map(b=>`<li>${b}</li>`).join('')}</ul>
   </div>`;
 }
- 
+
 function render() {
   const d = CV;
   const c = d.contact;
- 
+
   const profileHtml = d.profile
     .replace('5+ years of experience', '<strong>5+ years of experience</strong>')
     .replace(' leader ', ' <strong>leader</strong> ')
     .replace(' maker ', ' <strong>maker</strong> ')
     .replace(' advocate ', ' <strong>advocate</strong> ');
- 
+
   const firstJob = d.experience[0];
   const restJobs = d.experience.slice(1);
- 
+
   const skillsHtml = d.sidebar.skills.map(s =>
     `<div class="skill-row"><strong>${s.label}:</strong> ${s.items.join(' | ')}</div>`
   ).join('');
- 
+
   const toolsHtml = d.sidebar.tools.map(t =>
     `<div class="tool-item"><div class="tool-icon-wrap">${ICONS[t.icon]||''}</div>${t.name}</div>`
   ).join('');
- 
+
   const certsHtml = d.sidebar.certifications.map(cert =>
     `<div class="cert-item"><div class="cert-provider">${cert.provider}</div><div class="cert-name">${cert.name}</div></div>`
   ).join('');
- 
+
   const eduHtml = d.sidebar.education.map(e => {
     const ini = e.institution.split(' ').map(w=>w[0]).join('').slice(0,2);
     return `<div class="edu-item">
@@ -1090,7 +416,7 @@ function render() {
       <div><div class="edu-degree">${e.degree}</div><div class="edu-uni">${e.institution}</div></div>
     </div>`;
   }).join('');
- 
+
   document.getElementById('cv-root').innerHTML = `
     <div class="header">
       <div class="header-top">
@@ -1109,17 +435,17 @@ function render() {
         <a href="${c.portfolio}">${c.portfolio}</a>
       </div>
     </div>
- 
+
     <div class="profile-wrap">
       <div class="section-heading">Profile</div>
       <p>${profileHtml}</p>
     </div>
- 
+
     <div class="first-job-wrap">
       <div class="section-heading">Experience</div>
       ${jobHtml(firstJob, 'first-job')}
     </div>
- 
+
     <div class="split">
       <div class="jobs-col">
         ${restJobs.map(j => jobHtml(j)).join('')}
@@ -1143,11 +469,11 @@ function render() {
         </div>
       </div>
     </div>
- 
+
     <div class="footer">Let's work together on your next product, references upon request 🚀</div>
   `;
 }
- 
+
 render();
 </script>
 </body>
